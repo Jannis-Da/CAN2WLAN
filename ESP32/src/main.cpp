@@ -11,8 +11,8 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   Serial.println("Hello world!");
-  delay(1000);
-  
+  delay(100);
+
 }
 
 // put function definitions here:
