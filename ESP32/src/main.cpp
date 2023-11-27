@@ -1,19 +1,12 @@
 #include <Arduino.h>
-
-// put function declarations here:
-int myFunction(int, int);
+#include "Access_Point.h"
 
 void setup() {
-  // put your setup code here, to run once:
   Serial.begin(9600);
+  Init_AP();
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  Serial.println("Hello world!");
+  CAN_Mockup();
 }
 
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
-}
