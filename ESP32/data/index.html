@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CAN Mockup Demo</title>
+</head>
+<body>
+  <h1>CAN Mockup Demo</h1>
+  <div id="canData"></div>
+
+  <script>
+    const socket = new WebSocket('ws://' + window.location.hostname + '/ws');
+  
+    socket.onopen = function(event) {
+      console.log('WebSocket connection opened:', event);
+    };
+  
+    socket.onmessage = function(event) {
+      console.log('WebSocket message received:', event.data);
+  
+      try {
+        const canData = JSON.parse(event.data);
+  
+        // Update the content with CAN data
+        document.getElementById('canData').innerHTML = `
+          <p>CAN ID: ${canData.canId}</p>
+          <p>CAN Data: ${canData.canData}</p>
+          <p>CAN Data Size: ${canData.canDataSize}</p>
+        `;
+      } catch (error) {
+        console.error('Error parsing JSON:', error);
+      }
+    };
+  
+    socket.onclose = function(event) {
+      console.log('WebSocket connection closed:', event);
+    };
+  
+    socket.onerror = function(event) {
+      console.error('WebSocket error:', event);
+      console.error('WebSocket readyState:', socket.readyState);
+    };
+  </script>
+  
+</body>
+</html>
