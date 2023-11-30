@@ -53,15 +53,16 @@ void Init_AP(){
 void CAN_Mockup() {
   counter++;
   // Mock CAN data for demonstration
-  int canId = 0x123 + counter;
-  int canData = 0x04;
+  int canId = random(0x01, 0xFF);
+  int canData = random(0x0001, 0xFFFF);
   int canDataSize = sizeof(canData);
 
   // Encode CAN data as JSON
   DynamicJsonDocument doc(256);
-  doc["canId"] = canId;
-  doc["canData"] = canData;
-  doc["canDataSize"] = canDataSize;
+  doc["timestamp"] = counter;
+  doc["id"] = canId;
+  doc["data"] = canData;
+  doc["crc"] = canDataSize;
 
   // Convert JSON to a string
   String jsonString;
@@ -72,7 +73,3 @@ void CAN_Mockup() {
 
   delay(1000);
 }
-
-
-
-
