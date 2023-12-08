@@ -7,6 +7,6 @@ void setup() {
 }
 
 void loop() {
-  CAN_Mockup();
+  sendRandCANData();
 }
 
