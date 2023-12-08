@@ -25,8 +25,8 @@
         }
 
         .table-container {
-            max-height: 700px;
-            width: 80%;
+            max-height: 550px;
+            width: 60%;
             overflow-y: auto;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
@@ -49,7 +49,7 @@
 
         tbody {
             display: block;
-            max-height: 600px; /* Adjust as needed */
+            height: 450px; /* Adjust as needed */
             overflow-y: auto;
             width: 100%;
             position: relative;
@@ -79,22 +79,61 @@
 
         th:nth-child(2),
         td:nth-child(2) {
-            width: 10%;
+            width: 15%;
         }
 
         th:nth-child(3),
         td:nth-child(3) {
-            width: 50%;
+            width: 40%;
         }
 
         th:nth-child(4),
         td:nth-child(4) {
-            width: 20%;
+            width: 15%;
+        }
+
+        th:nth-child(5),
+        td:nth-child(5) {
+            width: 15%;
         }
 
         tbody tr:hover {
             background-color: rgba(95, 158, 160, 0.1);
         }
+
+
+        .export-button, .stream-button {
+            background-color: #4CAF50; /* Green background */
+            border: none;
+            color: white; /* White text */
+            padding: 15px 20px; /* Padding */
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 20px; /* Adjust as needed */
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .export-button:hover, .stream-button:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+
+        .stream-button.stop {
+            background-color: #f44336; /* Red background for stop button */
+        }
+
+        .stream-button.stop:hover {
+            background-color: #d32f2f; /* Darker red on hover */
+        }
+
+        .export-button:disabled {
+            background-color: #cccccc; /* Disable background color */
+            cursor: not-allowed; /* Disable cursor */
+        }
+
+
     </style>
 </head>
 
@@ -105,10 +144,11 @@
         <table id="canTable">
             <thead>
                 <tr>
-                    <th>Timestamp</th>
                     <th>ID</th>
+                    <th>Frame-Length</th>
                     <th>Data</th>
-                    <th>CRC</th>
+                    <th>Extended Flag</th>
+                    <th>RTR Flag</th>
                 </tr>
             </thead>
             <tbody>
@@ -117,22 +157,12 @@
         </table>
     </div>
 
+    <button class="export-button" onclick="exportToXML()">Export to XML</button>
+
     <script>
         const socket = new WebSocket('ws://' + window.location.hostname + '/ws');
 
         var canFrames = [];
-
-        function updateTime(){
-            var currentDate = new Date();
-
-            var hours = currentDate.getHours().toString().padStart(2, '0');
-            var minutes = currentDate.getMinutes().toString().padStart(2, '0');
-            var seconds = currentDate.getSeconds().toString().padStart(2, '0');
-
-            var timeString = `${hours}:${minutes}:${seconds}`;
-
-            return timeString;
-        }
 
         function populateTable(){
             var tableBody = document.getElementById('canTable').getElementsByTagName('tbody')[0];
@@ -142,21 +172,23 @@
             for (var i = 0; i < canFrames.length; i++) {
                 var row = tableBody.insertRow(i);
 
-                var timestampCell = row.insertCell(0);
-                var idCell = row.insertCell(1);
+                var idCell = row.insertCell(0);
+                var frameLengthCell = row.insertCell(1);
                 var dataCell = row.insertCell(2);
-                var crcCell = row.insertCell(3);
+                var extCell = row.insertCell(3);
+                var rtrCell = row.insertCell(4);
 
-                timestampCell.innerHTML = canFrames[i].timestamp;
-                idCell.innerHTML = canFrames[i].id;
+                idCell.innerHTML = canFrames[i].identifier;
+                frameLengthCell.innerHTML = canFrames[i].frameLength;
                 dataCell.innerHTML = canFrames[i].data;
-                crcCell.innerHTML = canFrames[i].crc;
+                extCell.innerHTML = canFrames[i].extFlag;
+                rtrCell.innerHTML = canFrames[i].rtrFlag;
             }
         }
 
    
         socket.onopen = function(event) {
-        console.log('WebSocket connection opened:', event);
+            console.log('WebSocket connection opened:', event);
         };
     
         socket.onmessage = function(event) {
@@ -164,9 +196,7 @@
         
             try {
                 const canData = JSON.parse(event.data);
-
-                canData.timestamp = updateTime();
-                
+              
                 canFrames.unshift(canData);
 
                 populateTable();
@@ -184,6 +214,59 @@
             console.error('WebSocket error:', event);
             console.error('WebSocket readyState:', socket.readyState);
         };
+        
+
+        function exportToXML() {
+            // Create an XML string with the received CAN messages
+            var xmlString = '<?xml version="1.0" encoding="UTF-8"?>\n<CanMessages>\n';
+
+            for (var i = 0; i < canFrames.length; i++) {
+                xmlString += '    <CanMessage>\n';
+                xmlString += `        <ID>${canFrames[i].identifier}</ID>\n`;
+                xmlString += `        <FrameLength>${canFrames[i].frameLength}</FrameLength>\n`;
+                xmlString += `        <Data>${canFrames[i].data}</Data>\n`;
+                xmlString += `        <ExtendedFlag>${canFrames[i].extFlag}</ExtendedFlag>\n`;
+                xmlString += `        <RTRFlag>${canFrames[i].rtrFlag}</RTRFlag>\n`;
+                xmlString += '    </CanMessage>\n';
+            }
+
+            xmlString += '</CanMessages>';
+
+            // Create a Blob with the XML data
+            var blob = new Blob([xmlString], { type: 'text/xml' });
+
+            // Create a link to trigger the download
+            var a = document.createElement('a');
+            a.href = window.URL.createObjectURL(blob);
+            a.download = 'CAN_Dump.xml';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        // Function to start the stream
+        function startStream() {
+            // Add logic to start the stream, if needed
+
+            // Enable Stop Stream button
+            document.querySelector('.stream-button.stop').removeAttribute('disabled');
+            // Disable Start Stream button
+            document.querySelector('.stream-button').setAttribute('disabled', 'true');
+            // Enable Export to XML button
+            document.querySelector('.export-button').removeAttribute('disabled');
+        }
+
+        // Function to stop the stream
+        function stopStream() {
+            // Add logic to stop the stream, if needed
+
+            // Enable Start Stream button
+            document.querySelector('.stream-button').removeAttribute('disabled');
+            // Disable Stop Stream button
+            document.querySelector('.stream-button.stop').setAttribute('disabled', 'true');
+            // Disable Export to XML button
+            document.querySelector('.export-button').setAttribute('disabled', 'true');
+        }
 
         
     </script>
