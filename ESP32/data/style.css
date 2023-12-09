@@ -1,0 +1,186 @@
+body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    min-height: 100vh;
+  }
+  
+  h1 {
+    text-align: left;
+    color: #333;
+    display: block;
+    padding: 20px;
+  }
+  
+  .flex-container {
+    display: flex;
+    width: 100%;
+    margin-right: 20px;
+  }
+  
+  .table-container {
+    max-height: 550px;
+    width: 60%;
+    overflow-y: auto;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    margin: 0 20px;
+    background: white;
+  }
+  
+  #canTable {
+    border-collapse: collapse;
+    width: 100%;
+    background: white;
+  }
+
+  #canTable thead,
+  #canTable tbody {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  #canTable tbody {
+    display: block;
+    height: 450px; /* Adjust as needed */
+    overflow-y: auto;
+    width: 100%;
+    position: relative;
+  }
+
+  #canTable tbody tr {
+    display: table;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  #canTable th,
+  #canTable td {
+    text-align: left;
+    padding: 15px;
+    box-sizing: border-box;
+  }
+  
+  #canTable th {
+    background-color: #5075b9;
+    color: white;
+  }
+  
+  #canTable th:nth-child(1),
+  #canTable td:nth-child(1),
+  #canTable th:nth-child(2),
+  #canTable td:nth-child(2),
+  #canTable th:nth-child(4),
+  #canTable td:nth-child(4),
+  #canTable th:nth-child(5),
+  #canTable td:nth-child(5) {
+    width: 15%;
+  }
+  
+  #canTable th:nth-child(3),
+  #canTable td:nth-child(3) {
+    width: 40%;
+  }
+  
+  #canTable tbody tr:hover {
+    background-color: rgba(95, 158, 160, 0.1);
+  }
+  
+  .export-button {
+    background-color: #4caf50;
+    border: none;
+    color: white;
+    padding: 15px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 20px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .export-button:hover {
+    background-color: #45a049;
+  }
+  
+  .export-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+  
+  .configure-button, .send-button{
+    background-color: #4a5158;
+    border: none;
+    color: white;
+    padding: 8px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+  }
+  
+  .configure-button:hover, .send-button:hover {
+      background-color: #2a2e2a;
+  }
+  
+  .right-column-container {
+    display: flex;
+    flex-direction: column;
+    max-height: 550px;
+    width: 30%;
+  }
+  
+  .settings-container,
+  .send-container {
+    width: calc(100% - 40px);
+    margin: 0 10px;
+    padding: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    background-color: #fff;
+  }
+  
+  .send-container {
+    margin-top: 20px;
+  }
+  
+  .settings-label {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  
+  .send-label {
+    font-size: 16px;
+  }
+  
+  .settings-input {
+    width: 90%;
+    padding: 8px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .send-input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 5px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  
+  
+  
+  

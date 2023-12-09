@@ -24,17 +24,18 @@ typedef struct {
     std::vector<uint8_t> rtrFlag;
 } CANFrame;
 
-void handleRoot(AsyncWebServerRequest *request) {
-  File file = SPIFFS.open("/index.html", "r");
+void serveFile(AsyncWebServerRequest *request, const char *filename, const char *contentType) {
+  File file = SPIFFS.open(filename, "r");
   if (!file) {
     Serial.println("Failed to open file for reading");
+    request->send(404, "text/plain", "File not found");
     return;
   }
 
-  String htmlContent = file.readString();
+  String fileContent = file.readString();
   file.close();
 
-  request->send(200, "text/html", htmlContent);
+  request->send(200, contentType, fileContent);
 }
 
 void Init_AP(){
@@ -61,7 +62,17 @@ void Init_AP(){
 
   server.addHandler(&ws);
 
-  server.on("/", HTTP_GET, handleRoot);
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+    serveFile(request, "/index.html", "text/html");
+  });
+
+  server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
+    serveFile(request, "/style.css", "text/css");
+  });
+
+  server.on("/script.js", HTTP_GET, [](AsyncWebServerRequest *request){
+    serveFile(request, "/script.js", "application/javascript");
+  });
 
   server.begin();
 }
@@ -173,7 +184,7 @@ void sendRandCANData() {
   BroadcastUDP(canFrameVec, canFrameLen);
   ws.textAll(canFrameString);
 
-  delay(1000);
+  delay(400);
 }
 
 
